@@ -23,3 +23,4 @@ func NewPostgresDB(cfg config.Config) *sqlx.DB {
 
 	return db
 }
+
