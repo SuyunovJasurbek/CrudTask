@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 
+	p "github.com/SuyunovJasurbek/CrudTask/src/repository/postgres"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -11,7 +12,7 @@ type Repository struct {
 }
 
 type UserI interface {
-	CreateUser(ctx context.Context)int 
+	CreateUser(ctx context.Context) int
 	// UpdateUser(ctx context.Context)
 	// DeleteUser(ctx context.Context)
 	// GetIdUser(ctx context.Context)
@@ -19,6 +20,6 @@ type UserI interface {
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		UserI: NewUserPostgres(db),
+		UserI: p.NewUserPostgres(db),
 	}
 }

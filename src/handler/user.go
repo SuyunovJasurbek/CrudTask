@@ -1,5 +1,8 @@
 package handler
 
+import "fmt"
+
 func(h *Handler) CreateUser() {
-	h.serv.User.CreateUser("Hi")
+	fmt.Println("Assalomu Alaykum")
+	h.service.CreateUser()
 }
