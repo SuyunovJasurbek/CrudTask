@@ -2,7 +2,7 @@ package helper
 
 import "github.com/SuyunovJasurbek/CrudTask/models"
 
-func UserCreateFeildCheck( user models.UserHandler)(models.Error, bool){
+func UserFeildCheck( user models.UserHandler)(models.Error, bool){
 	if len(user.FullName) < 3 || len(user.FullName) > 20 {
 		 return models.Error{Message: "Fullname must be between 3 and 20 characters"}, false
 	}else if len(user.NickName) < 3 || len(user.NickName) > 20 {

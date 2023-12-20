@@ -19,9 +19,8 @@ func SetUpApi(h *handler.Handler) *gin.Engine {
 		{
 			users := v.Group("/users")
 			{
-				// swagger
-
 				users.POST("/", h.CreateUser)
+				users.PUT("/:id", h.UpdateUser)
 			}
 		}
 	}

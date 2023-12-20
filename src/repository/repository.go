@@ -13,8 +13,8 @@ type Repository struct {
 }
 
 type UserI interface {
-	CreateUser( ctx context.Context,entity models.UserService) ( error)
-	// UpdateUser(ctx context.Context)
+	CreateUser( ctx context.Context,entity models.UserService) (int , error)
+	UpdateUser(ctx context.Context, Id int , entity models.UserUpdate) ( string , error)
 	// DeleteUser(ctx context.Context)
 	// GetIdUser(ctx context.Context)
 }

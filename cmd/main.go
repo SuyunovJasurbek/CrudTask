@@ -23,6 +23,7 @@ import (
 func main() {
 	cfg := config.Load()
 	pgdb := postgres.NewPostgresDB(cfg)
+	defer pgdb.Close()
 	r := repository.NewRepository(pgdb)
 	s := service.NewService(r)
 	h := handler.NewHandler(s)
