@@ -27,7 +27,7 @@ func SetUpApi(h *handler.Handler) *gin.Engine {
 				multi := users.Group("/multi")
 				{
 					multi.POST("/", h.CreateUsers)
-					multi.PUT("/", h.Ping)
+					multi.PUT("/", h.UpdateUsers)
 					multi.DELETE("/", h.Ping)
 				}
 			}

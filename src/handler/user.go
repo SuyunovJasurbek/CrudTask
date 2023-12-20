@@ -190,7 +190,7 @@ func (h *Handler) GetUsers(c *gin.Context) {
 		return
 	}
 }
-
+// multi
 func (h *Handler) CreateUsers(c *gin.Context) {
 	var users []models.UserHandler
 	if err := c.ShouldBindJSON(&users); err != nil {
@@ -204,7 +204,7 @@ func (h *Handler) CreateUsers(c *gin.Context) {
 		}
 	}
 
-	 err := h.service.CreateUsers(c, users)
+	err := h.service.CreateUsers(c, users)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Error{Message: "users not created"})
 		return
@@ -212,5 +212,29 @@ func (h *Handler) CreateUsers(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, models.Response{
 		Message: "users created",
+	})
+}
+
+func (h *Handler) UpdateUsers(c *gin.Context) {
+	var users []models.UsersUpdateHandler
+	if err := c.ShouldBindJSON(&users); err != nil {
+		c.JSON(http.StatusBadRequest, models.Error{Message: "invalid input body"})
+		return
+	}
+	for _, user := range users {
+		if err, ok := helper.UserUpdateFeildCheck(user); !ok {
+			c.JSON(http.StatusBadRequest, err)
+			return
+		}
+	}
+
+	err := h.service.UpdateUsers(c, users)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.Error{Message: "users not updated"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, models.Response{
+		Message: "users updated",
 	})
 }

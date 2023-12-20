@@ -164,3 +164,36 @@ func (r *UserPostgres) CreateUsers(ctx context.Context, users []models.UserServi
 
 	return nil
 }
+func (r *UserPostgres) UpdateUsers(ctx context.Context, users []models.UsersUpdate) ( error) {
+	query := fmt.Sprintf("UPDATE %s SET full_name = temp.full_name, nick_name = temp.nick_name, photo = temp.photo, birth_day = temp.birth_day, location = temp.location, updated_at = temp.updated_at FROM (VALUES ", userTable)
+	vals := []interface{}{}
+	for _, user := range users {
+		t := fmt.Sprintf("(%d, '%s', '%s', '%s', '%s', '%s', '%s'),",
+			user.ID,
+			user.FullName,
+			user.NickName,
+			user.Photo,
+			user.Birthday,
+			user.Location,
+			user.UpdatedAt)
+		query += t
+		vals = append(vals,
+			user.ID,
+			user.FullName,
+			user.NickName,
+			user.Photo,
+			user.Birthday,
+			user.Location,
+			user.UpdatedAt)
+	}
+	query = query[:len(query)-1]
+	query += ") AS temp(id, full_name, nick_name, photo, birth_day, location, updated_at) WHERE temp.id = users.id"
+	fmt.Println(query)
+	_, err := r.db.ExecContext(ctx, query)
+	if err != nil {
+		log.Printf("Error multi update users method: %v", err)
+		return nil 
+	}
+
+	return nil
+}

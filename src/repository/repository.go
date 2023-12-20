@@ -23,6 +23,7 @@ type UserI interface {
 	GetUserFullnameSort(ctx context.Context) ([]*models.GetUser, error)
 	// multi 
 	CreateUsers(ctx context.Context, users []models.UserService) ( error)
+	UpdateUsers(ctx context.Context, users []models.UsersUpdate) ( error)
 }
 
 func NewRepository(db *sqlx.DB) *Repository {

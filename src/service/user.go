@@ -91,7 +91,7 @@ func (s *Service) GetUserFullnameSort(ctx context.Context) ([]*models.GetUser, e
 	return users, nil
 }
 
-func (s *Service) CreateUsers(ctx context.Context, users []models.UserHandler) ( error) {
+func (s *Service) CreateUsers(ctx context.Context, users []models.UserHandler) error {
 	var usersService []models.UserService
 	for _, usr := range users {
 		var user = models.UserService{
@@ -106,9 +106,31 @@ func (s *Service) CreateUsers(ctx context.Context, users []models.UserHandler) (
 		}
 		usersService = append(usersService, user)
 	}
-	 err := s.repo.UserI.CreateUsers(ctx, usersService)
+	err := s.repo.UserI.CreateUsers(ctx, usersService)
 	if err != nil {
 		return nil
 	}
-	return  nil
+	return nil
+}
+
+func (s *Service) UpdateUsers(ctx context.Context, users []models.UsersUpdateHandler) error {
+	var dtos []models.UsersUpdate
+	for _, usr := range users {
+		var usrs = models.UsersUpdate{
+			ID:        usr.ID,
+			FullName:  usr.FullName,
+			NickName:  usr.NickName,
+			Photo:     usr.Photo,
+			Birthday:  usr.Birthday,
+			Location:  usr.Location,
+			UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		}
+		dtos = append(dtos, usrs)
+	}
+	err := s.repo.UserI.UpdateUsers(ctx, dtos)
+	if err != nil {
+		return nil
+	}
+
+	return nil
 }
