@@ -189,7 +189,6 @@ func (r *UserPostgres) UpdateUsers(ctx context.Context, users []models.UsersUpda
 	}
 	query = query[:len(query)-1]
 	query += ") AS temp(id, full_name, nick_name, photo, birth_day, location, updated_at) WHERE temp.id = users.id"
-	fmt.Println(query)
 	_, err := r.db.ExecContext(ctx, query)
 	if err != nil {
 		log.Printf("Error multi update users method: %v", err)
@@ -208,7 +207,6 @@ func ( r *UserPostgres) DeleteUsers(ctx context.Context, Ids []models.UserIds, d
 	}
 	query = query[:len(query)-1]
 	query += ")"
-	fmt.Println(query)
 	_, err := r.db.ExecContext(ctx, query, deleted_at)
 	if err != nil {
 		log.Printf("Error multi delete users method: %v", err)
