@@ -14,7 +14,14 @@ type Handler struct {
 func NewHandler(service *service.Service) *Handler {
 	return &Handler{service: service}
 }
-
+// Ping
+// @Summary  Ping
+// @Description  Ping
+// @Tags         Ping
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  string
+// @Router        /ping	[get]
 func (h *Handler) Ping(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "pong",

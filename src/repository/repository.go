@@ -13,6 +13,7 @@ type Repository struct {
 }
 
 type UserI interface {
+	// single
 	CreateUser( ctx context.Context,entity models.UserService) (int , error)
 	UpdateUserById(ctx context.Context, Id int , entity models.UserUpdate) ( string , error)
 	DeleteUserById(ctx context.Context, Id int, deleted_at string) (string, error)
@@ -24,6 +25,7 @@ type UserI interface {
 	// multi 
 	CreateUsers(ctx context.Context, users []models.UserService) ( error)
 	UpdateUsers(ctx context.Context, users []models.UsersUpdate) ( error)
+	DeleteUsers(ctx context.Context, Ids []models.UserIds, deleted_at string) ( error)
 }
 
 func NewRepository(db *sqlx.DB) *Repository {

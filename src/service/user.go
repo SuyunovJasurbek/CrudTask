@@ -83,7 +83,7 @@ func (s *Service) GetUsersByFieldUpdatedAt(ctx context.Context, updated_at strin
 	return users, nil
 }
 
-func (s *Service) GetUserFullnameSort(ctx context.Context) ([]*models.GetUser, error) {
+func (s *Service) GetUsersFullnameSort(ctx context.Context) ([]*models.GetUser, error) {
 	users, err := s.repo.UserI.GetUserFullnameSort(ctx)
 	if err != nil {
 		return nil, err
@@ -128,6 +128,23 @@ func (s *Service) UpdateUsers(ctx context.Context, users []models.UsersUpdateHan
 		dtos = append(dtos, usrs)
 	}
 	err := s.repo.UserI.UpdateUsers(ctx, dtos)
+	if err != nil {
+		return nil
+	}
+
+	return nil
+}
+
+func (s *Service) DeleteUsers(ctx context.Context, users []models.UserIds) error {
+	deleted_at := time.Now().Format("2006-01-02 15:04:05")
+	var dtos []models.UserIds
+	for _, usr := range users {
+		var usrs = models.UserIds{
+			ID: usr.ID,
+		}
+		dtos = append(dtos, usrs)
+	}
+	err := s.repo.UserI.DeleteUsers(ctx, dtos, deleted_at)
 	if err != nil {
 		return nil
 	}

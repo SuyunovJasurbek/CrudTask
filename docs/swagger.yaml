@@ -1,0 +1,371 @@
+definitions:
+  models.GetUser:
+    properties:
+      birth_day:
+        type: string
+      created_at:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      nick_name:
+        type: string
+      photo:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - birth_day
+    - full_name
+    - id
+    - location
+    - nick_name
+    - photo
+    type: object
+  models.Response:
+    properties:
+      message:
+        type: string
+    type: object
+  models.UserHandler:
+    properties:
+      birth_day:
+        default: "2000-01-01"
+        type: string
+      full_name:
+        default: Jasurbek
+        type: string
+      location:
+        default: Tashkent
+        type: string
+      nick_name:
+        default: Suyunov
+        type: string
+      photo:
+        default: https://jasurbek.jpg
+        type: string
+    required:
+    - birth_day
+    - full_name
+    - location
+    - nick_name
+    - photo
+    type: object
+  models.UserIds:
+    properties:
+      id:
+        default: 1
+        type: integer
+    required:
+    - id
+    type: object
+  models.UsersUpdateHandler:
+    properties:
+      birth_day:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      nick_name:
+        type: string
+      photo:
+        type: string
+    required:
+    - birth_day
+    - full_name
+    - id
+    - location
+    - nick_name
+    - photo
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /api/v1/users/:
+    get:
+      consumes:
+      - application/json
+      description: Get Users
+      parameters:
+      - description: User Created At example:2023-12-20 09:18:37
+        in: query
+        name: created_at
+        type: string
+      - description: User Updated At example:2023-12-20 09:18:37
+        in: query
+        name: updated_at
+        type: string
+      - description: User Full Name
+        in: query
+        name: asc
+        type: string
+      - description: User ID
+        in: query
+        name: desc
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.GetUser'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get Users
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserHandler'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Create User
+      tags:
+      - User
+  /api/v1/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete User
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get User
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update User
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserHandler'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update User
+      tags:
+      - User
+  /api/v1/users/multi:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Users
+      parameters:
+      - description: Users info
+        in: body
+        name: users
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.UserIds'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete Users
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create Users
+      parameters:
+      - description: Users info
+        in: body
+        name: users
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.UserHandler'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Create Users
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update Users
+      parameters:
+      - description: Users info
+        in: body
+        name: users
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.UsersUpdateHandler'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update Users
+      tags:
+      - User
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: Ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Ping
+      tags:
+      - Ping
+swagger: "2.0"

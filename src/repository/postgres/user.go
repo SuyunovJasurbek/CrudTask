@@ -21,7 +21,7 @@ type UserPostgres struct {
 func NewUserPostgres(db *sqlx.DB) *UserPostgres {
 	return &UserPostgres{db: db}
 }
-
+// single
 func (r *UserPostgres) CreateUser(ctx context.Context, entity models.UserService) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES ($1, $2, $3, $4, $5, $6, $7, $8 )  RETURNING id", userTable, userFeilds)
@@ -61,6 +61,7 @@ func (r *UserPostgres) UpdateUserById(ctx context.Context, Id int, entity models
 	}
 	return updated_at, nil
 }
+
 func (r *UserPostgres) DeleteUserById(ctx context.Context, Id int, deleted_at string) (string, error) {
 	query := fmt.Sprintf("UPDATE %s SET deleted_at = $1 WHERE id = $2 RETURNING deleted_at ", userTable)
 	err := r.db.QueryRowContext(ctx, query,
@@ -192,6 +193,25 @@ func (r *UserPostgres) UpdateUsers(ctx context.Context, users []models.UsersUpda
 	_, err := r.db.ExecContext(ctx, query)
 	if err != nil {
 		log.Printf("Error multi update users method: %v", err)
+		return nil 
+	}
+
+	return nil
+}
+func ( r *UserPostgres) DeleteUsers(ctx context.Context, Ids []models.UserIds, deleted_at string) ( error) {
+	query := fmt.Sprintf("UPDATE %s SET deleted_at = $1 WHERE id IN (", userTable)
+	vals := []interface{}{}
+	for _, user := range Ids {
+		t := fmt.Sprintf("%d,", user.ID)
+		query += t
+		vals = append(vals, user.ID)
+	}
+	query = query[:len(query)-1]
+	query += ")"
+	fmt.Println(query)
+	_, err := r.db.ExecContext(ctx, query, deleted_at)
+	if err != nil {
+		log.Printf("Error multi delete users method: %v", err)
 		return nil 
 	}
 

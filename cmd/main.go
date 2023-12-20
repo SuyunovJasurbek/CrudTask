@@ -5,6 +5,7 @@ import (
 
 	"github.com/SuyunovJasurbek/CrudTask/api"
 	"github.com/SuyunovJasurbek/CrudTask/config"
+	_ "github.com/SuyunovJasurbek/CrudTask/docs"
 	"github.com/SuyunovJasurbek/CrudTask/src/handler"
 	"github.com/SuyunovJasurbek/CrudTask/src/repository"
 	"github.com/SuyunovJasurbek/CrudTask/src/repository/postgres"

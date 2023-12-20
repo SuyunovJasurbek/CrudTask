@@ -321,16 +321,26 @@ func (operation *Operation) ParseParamComment(commentLine string, astFile *ast.F
 				}
 
 				switch {
-				case prop.Type[0] == ARRAY && prop.Items.Schema != nil &&
-					len(prop.Items.Schema.Type) > 0 && IsSimplePrimitiveType(prop.Items.Schema.Type[0]):
-
-					param = createParameter(paramType, prop.Description, formName, prop.Type[0], prop.Items.Schema.Type[0], findInSlice(schema.Required, name), enums, operation.parser.collectionFormatInQuery)
+				case prop.Type[0] == ARRAY:
+					if prop.Items.Schema == nil {
+						continue
+					}
+					itemSchema := prop.Items.Schema
+					if len(itemSchema.Type) == 0 {
+						itemSchema = operation.parser.getUnderlyingSchema(prop.Items.Schema)
+					}
+					if len(itemSchema.Type) == 0 {
+						continue
+					}
+					if !IsSimplePrimitiveType(itemSchema.Type[0]) {
+						continue
+					}
+					param = createParameter(paramType, prop.Description, formName, prop.Type[0], itemSchema.Type[0], findInSlice(schema.Required, name), itemSchema.Enum, operation.parser.collectionFormatInQuery)
 
 				case IsSimplePrimitiveType(prop.Type[0]):
-					param = createParameter(paramType, prop.Description, formName, PRIMITIVE, prop.Type[0], findInSlice(schema.Required, name), enums, operation.parser.collectionFormatInQuery)
+					param = createParameter(paramType, prop.Description, formName, PRIMITIVE, prop.Type[0], findInSlice(schema.Required, name), nil, operation.parser.collectionFormatInQuery)
 				default:
 					operation.parser.debug.Printf("skip field [%s] in %s is not supported type for %s", name, refType, paramType)
-
 					continue
 				}
 
@@ -371,7 +381,8 @@ func (operation *Operation) ParseParamComment(commentLine string, astFile *ast.F
 		return fmt.Errorf("%s is not supported paramType", paramType)
 	}
 
-	err := operation.parseParamAttribute(commentLine, objectType, refType, &param)
+	err := operation.parseParamAttribute(commentLine, objectType, refType, paramType, &param)
+
 	if err != nil {
 		return err
 	}
@@ -426,7 +437,7 @@ var regexAttributes = map[string]*regexp.Regexp{
 	schemaExampleTag: regexp.MustCompile(`(?i)\s+schemaExample\(.*\)`),
 }
 
-func (operation *Operation) parseParamAttribute(comment, objectType, schemaType string, param *spec.Parameter) error {
+func (operation *Operation) parseParamAttribute(comment, objectType, schemaType, paramType string, param *spec.Parameter) error {
 	schemaType = TransToValidSchemeType(schemaType)
 
 	for attrKey, re := range regexAttributes {
@@ -437,7 +448,7 @@ func (operation *Operation) parseParamAttribute(comment, objectType, schemaType 
 
 		switch attrKey {
 		case enumsTag:
-			err = setEnumParam(param, attr, objectType, schemaType)
+			err = setEnumParam(param, attr, objectType, schemaType, paramType)
 		case minimumTag, maximumTag:
 			err = setNumberParam(param, attrKey, schemaType, attr, comment)
 		case defaultTag:
@@ -516,7 +527,7 @@ func setNumberParam(param *spec.Parameter, name, schemaType, attr, commentLine s
 	}
 }
 
-func setEnumParam(param *spec.Parameter, attr, objectType, schemaType string) error {
+func setEnumParam(param *spec.Parameter, attr, objectType, schemaType, paramType string) error {
 	for _, e := range strings.Split(attr, ",") {
 		e = strings.TrimSpace(e)
 
@@ -529,7 +540,12 @@ func setEnumParam(param *spec.Parameter, attr, objectType, schemaType string) er
 		case ARRAY:
 			param.Items.Enum = append(param.Items.Enum, value)
 		default:
-			param.Enum = append(param.Enum, value)
+			switch paramType {
+			case "body":
+				param.Schema.Enum = append(param.Schema.Enum, value)
+			default:
+				param.Enum = append(param.Enum, value)
+			}
 		}
 	}
 
@@ -705,6 +721,11 @@ func (operation *Operation) ParseRouterComment(commentLine string) error {
 
 // ParseSecurityComment parses comment for given `security` comment string.
 func (operation *Operation) ParseSecurityComment(commentLine string) error {
+	if len(commentLine) == 0 {
+		operation.Security = []map[string][]string{}
+		return nil
+	}
+
 	var (
 		securityMap    = make(map[string][]string)
 		securitySource = commentLine[strings.Index(commentLine, "@Security")+1:]

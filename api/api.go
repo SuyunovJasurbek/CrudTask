@@ -9,6 +9,7 @@ import (
 
 func SetUpApi(h *handler.Handler) *gin.Engine {
 	w := gin.Default()
+
 	swagger := ginSwagger.URL("/swagger/doc.json") // The url pointing to API definition
 	w.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, swagger))
 	w.GET("/ping", h.Ping)
@@ -28,7 +29,7 @@ func SetUpApi(h *handler.Handler) *gin.Engine {
 				{
 					multi.POST("/", h.CreateUsers)
 					multi.PUT("/", h.UpdateUsers)
-					multi.DELETE("/", h.Ping)
+					multi.DELETE("/", h.DeleteUsers)
 				}
 			}
 		}
@@ -36,3 +37,4 @@ func SetUpApi(h *handler.Handler) *gin.Engine {
 	// end
 	return w
 }
+

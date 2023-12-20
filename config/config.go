@@ -11,6 +11,7 @@ import (
 type Config struct {
 
 	HTTPPort   int
+	HTTPHost   string
 	HTTPScheme string
 
 	PostgresHost     string
@@ -32,6 +33,7 @@ func Load() Config {
 	config := Config{}
 
 	config.HTTPPort = cast.ToInt(getOrReturnDefaultValue("HTTP_PORT", 9050))
+	config.HTTPHost = cast.ToString(getOrReturnDefaultValue("HTTP_HOST","localhost"))
 	config.HTTPScheme = cast.ToString(getOrReturnDefaultValue("HTTP_SCHEME", "http"))
 
 	config.PostgresHost = cast.ToString(getOrReturnDefaultValue("POSTGRES_HOST", "0.0.0.0"))
