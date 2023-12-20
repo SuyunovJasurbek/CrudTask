@@ -20,7 +20,10 @@ func SetUpApi(h *handler.Handler) *gin.Engine {
 			users := v.Group("/users")
 			{
 				users.POST("/", h.CreateUser)
-				users.PUT("/:id", h.UpdateUser)
+				users.PUT("/:id", h.UpdateUserById)
+				users.DELETE("/:id", h.DeleteUserByID)
+				users.GET("/:id", h.GetUserById)
+				users.GET("/", h.GetUsers)
 			}
 		}
 	}
