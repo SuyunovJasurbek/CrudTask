@@ -64,3 +64,7 @@ type Error struct {
 type Response struct {
 	Message string
 }
+
+type UsersResponse struct {
+	UserIds []int
+}

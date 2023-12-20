@@ -128,3 +128,39 @@ func (r *UserPostgres) GetUserFullnameSort(ctx context.Context) ([]*models.GetUs
 	}
 	return users, nil
 }
+
+// multi
+func (r *UserPostgres) CreateUsers(ctx context.Context, users []models.UserService) ( error) {
+	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES ", userTable, userFeilds)
+	vals := []interface{}{}
+	for _, user := range users {
+		t := fmt.Sprintf("('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'),",
+			user.FullName,
+			user.NickName,
+			user.Photo,
+			user.Birthday,
+			user.Location,
+			user.CreatedAt,
+			user.UpdatedAt,
+			user.DeletedAt)
+		query += t
+		vals = append(vals,
+			user.FullName,
+			user.NickName,
+			user.Photo,
+			user.Birthday,
+			user.Location,
+			user.CreatedAt,
+			user.UpdatedAt,
+			user.DeletedAt)
+	}
+	query = query[:len(query)-1]
+	fmt.Println(query)
+	_, err := r.db.ExecContext(ctx, query)
+	if err != nil {
+		log.Printf("Error multi create users method: %v", err)
+		return nil 
+	}
+
+	return nil
+}

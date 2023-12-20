@@ -21,6 +21,8 @@ type UserI interface {
 	GetUsersByFieldCreatedAt(ctx context.Context, created_at string) ([]*models.GetUser, error)
 	GetUsersByFieldUpdatedAt(ctx context.Context, updated_at string) ([]*models.GetUser, error)
 	GetUserFullnameSort(ctx context.Context) ([]*models.GetUser, error)
+	// multi 
+	CreateUsers(ctx context.Context, users []models.UserService) ( error)
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
